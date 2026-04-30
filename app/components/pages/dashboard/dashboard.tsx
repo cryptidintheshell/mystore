@@ -3,8 +3,8 @@ import { CardInformation } from "./components/card-information";
 
 export default function Dashboard() {
 	return (
-		<main className="bg-slate-50 h-full w-full p-8 overflow-y-auto">
-			<h1 className="text-3xl font-bold mb-8 text-slate-800">Inventory Overview</h1>
+		<main className="bg-slate-50 h-full w-full p-4 overflow-y-auto">
+			<h1 className="text-3xl font-bold mb-8 text-slate-800">Overview</h1>
 
 			{/* Metrics Grid */}
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">

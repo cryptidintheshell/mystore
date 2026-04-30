@@ -5,6 +5,7 @@
   --foreground: #000000;
   --navbar: #C2D099;
   --sidebar: #E6EEC9;
+  --sidebar-selected: #7DA78C;
 }
 
 @theme {
@@ -12,6 +13,7 @@
   --color-foreground: var(--foreground);
   --color-navbar: var(--navbar);
   --color-sidebar: var(--sidebar);
+  --color-sidebar-selected: var(--sidebar-selected);
 
 
   --font-sans: var(--font-geist-sans);
