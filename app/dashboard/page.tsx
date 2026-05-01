@@ -28,7 +28,7 @@ export default function IndexPage() {
 			<NavigationBar />
 			<div className="flex flex-1 overflow-hidden">
 				<SideBar currentTab={currentTab} updateTab={setCurrentTab} />
-				<div className="flex-1 overflow-auto">
+				<div className="flex-1 overflow-auto px-5">
 					{renderContent()}
 				</div>
 			</div>

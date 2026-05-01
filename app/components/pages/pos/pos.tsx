@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { Item } from "../../inventory/inventory";
+import { Item } from "../inventory/components/item-card/item-card";
 
 const Scanner = dynamic(() => import('./components/scanner/scanner'), { ssr: false });
 

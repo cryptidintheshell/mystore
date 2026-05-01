@@ -1,7 +1,7 @@
 export interface Item {
-	barcode: number;
+	barcode: string;
 	name: string;
-	price: double;
+	price: number;
 	size?: string;
 	amount: number;
 }
