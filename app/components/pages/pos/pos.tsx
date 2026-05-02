@@ -37,6 +37,15 @@ export default function InventoryPage() {
     });
   };
 
+  const handleAction = (e)=> {
+    if (items.length < 1) return;
+
+    const { name } = e.target;
+    if (name === "cancel") {
+      if (confirm("Are you sure you want to cancel?")) setItems([]);
+    } else if (name === "checkout") alert("checkout");
+  }
+
   return (
     <main className="flex h-full w-full p-5 gap-5 bg-slate-50">
       {/* Left: Scanner */}
@@ -73,8 +82,15 @@ export default function InventoryPage() {
 
         {/* Fixed Buttons */}
         <div className="absolute bottom-0 left-0 w-full p-5 bg-white border-t flex gap-3">
-          <button className="cursor-pointer flex-1 p-4 bg-red-200 hover:bg-red-300 rounded-lg transition-all shadow-xl font-bold">Cancel</button>
-          <button className="cursor-pointer flex-1 p-4 bg-green-200 hover:bg-green-300 rounded-lg transition-all shadow-xl font-bold">Checkout</button>
+          <button name="cancel" className="cursor-pointer flex-1 p-4 bg-red-200 hover:bg-red-300 rounded-lg transition-all shadow-xl font-bold"
+            onClick={handleAction}>
+            Cancel
+          </button>
+          
+          <button name="checkout" className="cursor-pointer flex-1 p-4 bg-green-200 hover:bg-green-300 rounded-lg transition-all shadow-xl font-bold"
+            onClick={handleAction}>
+            Checkout
+          </button>
         </div>
       </div>
     </main>

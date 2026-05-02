@@ -6,7 +6,6 @@ import styles from "./styles.module.css"
 
 export default function Login() {
   // form variables
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,7 +16,6 @@ export default function Login() {
   const handleTextChange = (e) => {
     const { name, value } = e.target;
     if (name === "email") setEmail(value);
-    else if (name === "username") setUsername(value);
     else if (name === "password") setPassword(value);
   }
 
@@ -60,17 +58,6 @@ export default function Login() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-slate-700 select-none">Username</label>
-              <input 
-                onChange={handleTextChange}
-                className="w-full border border-slate-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all" 
-                type="text" 
-                name="username"
-                placeholder="your_username"
-              />
-            </div>
-
-            <div className="space-y-1.5">
               <label className="text-sm font-medium text-slate-700 select-none">Password</label>
               <div className="relative flex items-center">
                 <input 
@@ -85,7 +72,7 @@ export default function Login() {
                   onClick={handleViewPassword} 
                   className="absolute right-3 p-1 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
                 >
-                  {isViewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {isViewPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                 </button>
               </div>
             </div>
