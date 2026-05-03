@@ -12,7 +12,8 @@
 !.yarn/versions
 =======
 .pnp.js
->>>>>>> 8087ecb58861daf00f61bdfb2163848eae70bedc
+
+*adminsdk*.json
 
 # testing
 /coverage

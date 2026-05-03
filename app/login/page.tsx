@@ -1,4 +1,6 @@
 "use client";
+
+import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react"
 import { useRef, useState } from "react"
 import Image from "next/image"
@@ -84,6 +86,10 @@ export default function Login() {
           >
             Login
           </button>
+          <div className="flex justify-between">
+            <Link href="/signup" className="px-5 py-1 text-green-700 hover:underline hover:cursor-pointer">Create account</Link>
+            <Link href="/forgot-password" className="px-5 py-1 text-green-700 hover:underline hover:cursor-pointer">Forgot password</Link>
+          </div>
         </form>
       </div>
     </main>

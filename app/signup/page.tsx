@@ -1,10 +1,13 @@
 "use client";
+
+import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
 import { useRef, useState } from "react"
 import Image from "next/image"
 import styles from "./styles.module.css"
+import { createUser } from "@/lib/actions";
 
-export default function Login() {
+export default function Signup() {
   // form variables
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -19,6 +22,22 @@ export default function Login() {
     if (name === "email") setEmail(value);
     else if (name === "username") setUsername(value);
     else if (name === "password") setPassword(value);
+  }
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      await createUser(email, password, username);
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -38,35 +57,40 @@ export default function Login() {
         </div>
 
         {/* Form Section */}
-        <form className="flex flex-col justify-center flex-1 gap-6 py-4 min-w-100">
+        <form onSubmit={handleSubmit} className="flex flex-col justify-center flex-1 gap-6 py-4 min-w-100">
           <div className="space-y-1">
             <p className="text-slate-600">
               Manage your store efficiently with
               <span className="font-bold text-green-700"> MyStore</span>
             </p>
             <h1 className="text-3xl font-extrabold text-slate-900">Create an account</h1>
+            {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
           </div>
 
           <div className="space-y-4">
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-slate-700 select-none">Email address</label>
               <input 
+                value={email}
                 onChange={handleTextChange} 
                 className="w-full border border-slate-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all" 
                 type="email" 
                 name="email"
                 placeholder="name@example.com"
+                required
               />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-slate-700 select-none">Username</label>
               <input 
+                value={username}
                 onChange={handleTextChange}
                 className="w-full border border-slate-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all" 
                 type="text" 
                 name="username"
                 placeholder="your_username"
+                required
               />
             </div>
 
@@ -74,11 +98,13 @@ export default function Login() {
               <label className="text-sm font-medium text-slate-700 select-none">Password</label>
               <div className="relative flex items-center">
                 <input 
+                  value={password}
                   ref={passwordField} 
                   onChange={handleTextChange}
                   className="w-full border border-slate-300 rounded-xl p-3 pr-11 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all" 
                   type={isViewPassword ? "text" : "password"} 
                   name="password"
+                  required
                 />
                 <button 
                   type="button"
@@ -92,11 +118,16 @@ export default function Login() {
           </div>
 
           <button 
-            className="bg-green-600 text-white w-full font-semibold rounded-xl p-3 mt-2 hover:bg-green-700 active:scale-[0.98] shadow-lg shadow-green-200 transition-all cursor-pointer" 
+            disabled={loading}
+            className={`bg-green-600 text-white w-full font-semibold rounded-xl p-3 mt-2 hover:bg-green-700 active:scale-[0.98] shadow-lg shadow-green-200 transition-all cursor-pointer ${loading ? "opacity-50 cursor-not-allowed" : ""}`} 
             type="submit"
           >
-            Login
+            {loading ? "Creating account..." : "Create account"}
           </button>
+          <div className="flex justify-between">
+            <Link href="/login" className="px-5 py-1 text-green-700 hover:underline hover:cursor-pointer">Login here</Link>
+            <Link href="/forgot-password" className="px-5 py-1 text-green-700 hover:underline hover:cursor-pointer">Forgot password</Link>
+          </div>
         </form>
       </div>
     </main>

@@ -32,6 +32,19 @@ export async function decrypt(token: string): Promise<SessionPayload | null> {
   }
 }
 
+export async function getSession() {
+  const cookie = await cookies();
+  const token = cookie.get("session")?.value;
+  if (!token) return null;
+
+  try {
+    return await decrypt(token);
+  } catch (error: unknown) {
+    console.error("[!] Failed to decrypt the session.");
+    return null;
+  }
+}
+
 // Creates a signed session token and sets the cookie
 export async function createSession(userId: string, username: string) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
@@ -45,4 +58,6 @@ export async function createSession(userId: string, username: string) {
     expires: expiresAt,
     path: '/',
   })
+
+  return true;
 }
