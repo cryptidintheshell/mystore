@@ -1,5 +1,4 @@
 "use server";
-
 import * as admin from "firebase-admin";
 import { adminAuth, adminDb } from "@/firebase/firebase-admin";
 import { createSession } from "./session/session";
@@ -17,8 +16,8 @@ export async function createUser(email: string, password: string, username: stri
 	    displayName: username,
     });
 
-    const userRef = adminDb.collection("users").doc(); 
-    const userID = userRef.id;
+    const userID = userRecord.uid;
+    const userRef = adminDb.collection("users").doc(userID); 
 
     await Promise.all([
       userRef.set({ 
