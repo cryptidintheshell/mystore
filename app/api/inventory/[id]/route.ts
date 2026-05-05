@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/session/session";
-import { getItem, updateItem, deleteItem } from "@/lib/inventory/inventory";
+import { getItem, updateItem, archiveItem } from "@/lib/inventory/inventory";
 
 export async function GET(
     request: NextRequest,
@@ -38,7 +38,10 @@ export async function PATCH(
         const { id } = await params;
         const body = await request.json();
         
-        await updateItem(session.userId, id, body);
+        const result = await updateItem(session.userId, id, body);
+        if (!result.success) {
+            return NextResponse.json({ error: result.error }, { status: 400 });
+        }
         return NextResponse.json({ message: "Item updated successfully" });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
@@ -56,9 +59,12 @@ export async function DELETE(
         }
 
         const { id } = await params;
-        await deleteItem(session.userId, id);
+        const result = await archiveItem(session.userId, id);
+        if (!result.success) {
+            return NextResponse.json({ error: result.error }, { status: 400 });
+        }
         
-        return NextResponse.json({ message: "Item deleted successfully" });
+        return NextResponse.json({ message: "Item archived successfully" });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

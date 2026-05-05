@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/session/session";
-import { getAllItems } from "@/lib/inventory/inventory";
+import { getAllItems, addItem } from "@/lib/inventory/inventory";
 
 export async function GET(request: NextRequest) {
     try {
@@ -9,7 +9,10 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const items = await getAllItems(session.userId);
+        const { searchParams } = new URL(request.url);
+        const archived = searchParams.get("archived") === "true";
+
+        const items = await getAllItems(session.userId, archived);
         return NextResponse.json(items);
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
@@ -24,9 +27,15 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        // const itemId = await addItem(session.userId, body);
+        const { barcode, productName, size, price, amount } = body;
+
+        const result = await addItem(session.userId, barcode, { productName, size, price, amount });
         
-        return NextResponse.json({ id: itemId, message: "Item added successfully" }, { status: 201 });
+        if (!result.success) {
+            return NextResponse.json({ error: result.error }, { status: 400 });
+        }
+
+        return NextResponse.json({ message: "Item added successfully" }, { status: 201 });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
