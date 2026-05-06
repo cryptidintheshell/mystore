@@ -1,8 +1,9 @@
 "use client";
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useEffect, useRef } from 'react';
+import { ScannerProps } from "@/app/props/pos-props";
 
-export default function Scanner({ onResult }: { onResult: (data: string) => void }) {
+export default function Scanner({ onResult }: ScannerProps) {
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
 
   useEffect(() => {

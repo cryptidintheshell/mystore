@@ -1,15 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Scanner from "../../pos/components/scanner/scanner";
-import { Item } from "./item-card/item-card";
+import { Item, InventoryModalProps } from "@/app/props/inventory-props";
 import { Search } from "lucide-react";
-
-interface InventoryModalProps {
-	isOpen: boolean;
-	onClose: () => void;
-	onSave: (item: Partial<Item> & { barcode: string }) => Promise<void>;
-	editingItem?: Item | null;
-}
 
 export default function InventoryModal({ isOpen, onClose, onSave, editingItem }: InventoryModalProps) {
 	const [barcode, setBarcode] = useState("");
@@ -17,11 +10,27 @@ export default function InventoryModal({ isOpen, onClose, onSave, editingItem }:
 	const [size, setSize] = useState("");
 	const [price, setPrice] = useState<number>(0);
 	const [amount, setAmount] = useState<number>(0);
+	const [category, setCategory] = useState("");
 	const [isScanning, setIsScanning] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [searchResults, setSearchResults] = useState<any[]>([]);
 	const [isSearching, setIsSearching] = useState(false);
+
+	const categories = [
+		"Canned Goods",
+		"Noodles/Instant Food",
+		"Snacks/Chips",
+		"Beverages/Drinks",
+		"Condiments/Cooking Essentials",
+		"Household/Laundry",
+		"Personal Care/Toiletries",
+		"Cigarettes/Tobacco",
+		"Grains/Rice",
+		"Sweets/Candies",
+		"Bread/Bakery",
+		"Others"
+	];
 
 	useEffect(() => {
 		if (editingItem) {
@@ -30,12 +39,14 @@ export default function InventoryModal({ isOpen, onClose, onSave, editingItem }:
 			setSize(editingItem.size || "");
 			setPrice(editingItem.price);
 			setAmount(editingItem.amount);
+			setCategory(editingItem.category || "");
 		} else {
 			setBarcode("");
 			setProductName("");
 			setSize("");
 			setPrice(0);
 			setAmount(0);
+			setCategory("");
 		}
 		setSearchQuery("");
 		setSearchResults([]);
@@ -66,6 +77,7 @@ export default function InventoryModal({ isOpen, onClose, onSave, editingItem }:
 		setBarcode(item.barcode);
 		setProductName(item.productName);
 		setSize(item.size || "");
+		setCategory(item.category || "");
 		setSearchResults([]);
 		setSearchQuery("");
 	};
@@ -91,6 +103,11 @@ export default function InventoryModal({ isOpen, onClose, onSave, editingItem }:
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+
+		// prompt user about price < 1
+		if (price < 1)
+			if (!confirm("Are you sure the price will be less than ₱1")) return;
+
 		setIsSaving(true);
 		try {
 			await onSave({
@@ -98,7 +115,8 @@ export default function InventoryModal({ isOpen, onClose, onSave, editingItem }:
 				name: productName,
 				size,
 				price,
-				amount
+				amount,
+				category
 			});
 			onClose();
 		} catch (error) {
@@ -214,6 +232,20 @@ export default function InventoryModal({ isOpen, onClose, onSave, editingItem }:
 									/>
 								</div>
 
+								<div className="flex flex-col gap-1">
+									<label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</label>
+									<select 
+										value={category} 
+										onChange={(e) => setCategory(e.target.value)}
+										className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-blue-500 text-sm appearance-none"
+									>
+										<option value="">Select a category</option>
+										{categories.map((cat) => (
+											<option key={cat} value={cat}>{cat}</option>
+										))}
+									</select>
+								</div>
+
 								<div className="grid grid-cols-2 gap-4">
 									<div className="flex flex-col gap-1">
 										<label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Price (₱)</label>
@@ -230,7 +262,7 @@ export default function InventoryModal({ isOpen, onClose, onSave, editingItem }:
 										<label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Stock Amount</label>
 										<input 
 											type="number" 
-											value={amount} 
+											value={amount}
 											onChange={(e) => setAmount(parseInt(e.target.value))}
 											className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-blue-500 text-sm"
 											required

@@ -27,9 +27,9 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        const { barcode, productName, size, price, amount } = body;
+        const { barcode, productName, size, price, amount, category } = body;
 
-        const result = await addItem(session.userId, barcode, { productName, size, price, amount });
+        const result = await addItem(session.userId, barcode, { productName, category, size, price, amount });
         
         if (!result.success) {
             return NextResponse.json({ error: result.error }, { status: 400 });

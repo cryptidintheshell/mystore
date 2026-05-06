@@ -1,6 +1,7 @@
 import { PackageSearch, ArrowLeft } from "lucide-react"
 import { useState, useEffect, useCallback } from "react"
-import ItemCard, { Item } from "./components/item-card/item-card"
+import ItemCard from "./components/item-card/item-card"
+import { Item } from "@/app/props/inventory-props"
 import InventoryModal from "./components/inventory-modal"
 
 export default function Inventory() {
@@ -10,6 +11,7 @@ export default function Inventory() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingItem, setEditingItem] = useState<Item | null>(null);
 	const [viewArchived, setViewArchived] = useState(false);
+	const [stocksPerCategory, setStocksPerCategory] = useState<number[]>([]);
 
 	const fetchInventory = useCallback(async () => {
 		try {
@@ -26,10 +28,13 @@ export default function Inventory() {
 				price: item.price || 0,
 				amount: item.amount || 0,
 				size: item.size || "",
+				category: item.category || "",
 				isArchived: item.isArchived || false
 			}));
 
 			setItems(formattedItems);
+
+			// console.log("cannedGoodsStock: ", cannedGoodsStock);
 
 		} catch (err: any) {
 			setError(err.message);
@@ -53,7 +58,8 @@ export default function Inventory() {
 			productName: itemData.name,
 			size: itemData.size,
 			price: itemData.price,
-			amount: itemData.amount
+			amount: itemData.amount,
+			category: itemData.category
 		};
 
 		const response = await fetch(url, {
@@ -119,8 +125,7 @@ export default function Inventory() {
 					{viewArchived && (
 						<button 
 							onClick={() => setViewArchived(false)}
-							className="p-2 hover:bg-slate-200 rounded-full transition-colors"
-						>
+							className="p-2 hover:bg-slate-200 rounded-full transition-colors" >
 							<ArrowLeft size={24} />
 						</button>
 					)}
@@ -134,14 +139,12 @@ export default function Inventory() {
 						<>
 							<button 
 								onClick={openAddModal}
-								className="px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-2xl shadow-sm transition-colors"
-							>
+								className="cursor-pointer px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-2xl shadow-sm transition-colors" >
 								Add new
 							</button>
 							<button 
 								onClick={() => setViewArchived(true)}
-								className="px-5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium rounded-2xl shadow-sm transition-colors"
-							>
+								className="cursor-pointer px-5 py-2 bg-orange-300 hover:bg-orange-400 text-slate-700 font-medium rounded-2xl shadow-sm transition-colors" >
 								Archives
 							</button>
 						</>

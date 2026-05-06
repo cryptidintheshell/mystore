@@ -1,10 +1,6 @@
 import { LayoutDashboard, BarChart3, Package, ShoppingCart, ScanBarcode } from "lucide-react";
 import styles from "./styles.module.css";
-
-interface SideBarProps {
-	currentTab: string;
-	updateTab: (tab: string) => void;
-}
+import { SideBarProps } from "@/app/props/sidebar-props";
 
 export default function SideBar({ currentTab, updateTab }: SideBarProps) {
 	const handleOnClick = (page: string) => {

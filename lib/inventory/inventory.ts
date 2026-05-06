@@ -43,7 +43,7 @@ export async function getItem(userID: string, itemID: string) {
 	}
 }
 
-export async function addItem(userID: string, barcode: string, data: { productName: string, size: string, price: number, amount: number }
+export async function addItem(userID: string, barcode: string, data: { productName: string, category: string, size: string, price: number, amount: number }
 ): Promise<{ success: boolean; error?: string }> {
 	if (!userID || !barcode || !data.productName) {
 		return { success: false, error: "Missing required fields: userID, barcode, or productName" };
@@ -56,23 +56,31 @@ export async function addItem(userID: string, barcode: string, data: { productNa
 	}
 
 	try {
+		// planning to re structure the inventory collection like this
+		// await adminDb.collection("users").doc(userID).collection("inventory").doc(data.category.replace("/", "_")).collection("items").doc(barcode).set({
+
 		await adminDb.collection("users").doc(userID).collection("inventory").doc(barcode).set({
 			barcode,
 			productName: data.productName,
+			productName_Lowercase: data.productName.toLowerCase(),
 			size: data.size || "",
 			price: data.price,
 			amount: data.amount,
+			sold: 0,
+			category: data.category || "",
 			isArchived: false,
 			createdAt: new Date().toISOString(),
 			updatedAt: new Date().toISOString(),
 		});
 
-		const productDoc = adminDb.collection("items").doc(barcode).get();
+		const productDoc = await adminDb.collection("items").doc(barcode).get();
 		if (!productDoc.exists) {
 			await adminDb.collection("items").doc(barcode).set({
 				barcode,
 				productName: data.productName,
+				productName_Lowercase: data.productName.toLowerCase(),
 				size: data.size || "",
+				category: data.category || "",
 				price: data.price,
 				createdAt: new Date().toISOString(),
 			});			
@@ -86,7 +94,7 @@ export async function addItem(userID: string, barcode: string, data: { productNa
 	}
 }
 
-export async function updateItem(userID: string, barcode: string, data: Partial<{ productName: string, size: string, price: number, amount: number, isArchived: boolean }>
+export async function updateItem(userID: string, barcode: string, data: Partial<{ productName: string, category: string, size: string, price: number, amount: number, isArchived: boolean }>
 ): Promise<{ success: boolean; error?: string }> {
 	try {
 		const updateData = {
@@ -112,10 +120,10 @@ export async function searchGlobalItems(query: string) {
 		// Firestore doesn't support full-text search natively without extensions
 		// For a sari-sari store, prefix or exact match might be enough or we fetch all and filter (if small)
 		const snapshot = await adminDb.collection("items")
-			.where("productName", ">=", query)
-			.where("productName", "<=", query + "\uf8ff")
+			.where("productName_Lowercase", ">=", query.toLowerCase())
+			.where("productName_Lowercase", "<=", query.toLowerCase() + "\uf8ff")
 			.limit(10)
-			.get();
+		.get();
 
 		return snapshot.docs.map(doc => ({
 			barcode: doc.id,

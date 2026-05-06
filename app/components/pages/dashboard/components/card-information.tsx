@@ -1,10 +1,5 @@
 import { LucideIcon } from "lucide-react";
-
-interface CardInformationProps {
-	Icon: LucideIcon;
-	title: string;
-	value: string;
-}
+import { CardInformationProps } from "@/app/props/dashboard-props";
 
 export function CardInformation({ Icon, title, value }: CardInformationProps) {
 	return (
